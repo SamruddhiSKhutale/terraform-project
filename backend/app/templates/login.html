@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block public_content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <i class="bi bi-layers-fill"></i>
+            <h1>NexusTasks</h1>
+            <p>Sign in to your account</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('main.login') }}">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Username or Email</label>
+                <input type="text" name="username" class="form-control" placeholder="Enter username or email" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
+            <div class="mb-4 form-check">
+                <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </button>
+        </form>
+        
+        <p class="text-center text-muted mb-0">
+            Don't have an account? <a href="{{ url_for('main.register') }}" class="fw-semibold text-decoration-none">Create one</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

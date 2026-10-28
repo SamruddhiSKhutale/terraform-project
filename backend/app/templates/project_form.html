@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit Project' if project else 'New Project' }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card-modern">
+                <div class="card-header">
+                    <span>
+                        <i class="bi bi-{{ 'pencil-square' if project else 'folder-plus' }} me-2 text-primary"></i>
+                        {{ 'Edit Project' if project else 'Create New Project' }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Project Name *</label>
+                            <input type="text" name="name" class="form-control" 
+                                   value="{{ project.name if project else '' }}" 
+                                   placeholder="e.g. Website Redesign" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Description</label>
+                            <textarea name="description" class="form-control" rows="4" 
+                                      placeholder="What is this project about?">{{ project.description if project else '' }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Color</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                {% set colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'] %}
+                                {% for c in colors %}
+                                <label class="color-option" style="cursor:pointer;">
+                                    <input type="radio" name="color" value="{{ c }}" 
+                                           {% if (project and project.color == c) or (not project and c == '#6366f1') %}checked{% endif %}
+                                           style="display:none;">
+                                    <span style="display:inline-block;width:32px;height:32px;border-radius:8px;background:{{ c }};border:3px solid transparent;"
+                                          class="color-swatch"></span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if project %}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="active" {% if project.status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="completed" {% if project.status == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="archived" {% if project.status == 'archived' %}selected{% endif %}>Archived</option>
+                            </select>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>
+                                {{ 'Update Project' if project else 'Create Project' }}
+                            </button>
+                            <a href="{{ url_for('main.projects') if not project else url_for('main.project_detail', project_id=project.id) }}" 
+                               class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.color-option input:checked + .color-swatch {
+    border-color: #0f172a !important;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0f172a;
+}
+</style>
+{% endblock %}

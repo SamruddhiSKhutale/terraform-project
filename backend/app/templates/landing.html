@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block public_content %}
+<div class="hero">
+    <div class="container hero-content">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-7">
+                <div class="animate-in">
+                    <h1>Manage Projects<br><span>Beautifully & Efficiently</span></h1>
+                    <p class="lead">NexusTasks is a modern 3-tier project management platform. Organize tasks, track progress, and collaborate with a stunning interface built for productivity.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="{{ url_for('main.register') }}" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Get Started Free
+                        </a>
+                        <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-lg px-4">
+                            Sign In
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="bi bi-kanban"></i>
+                        <h5>Smart Projects</h5>
+                        <p>Create unlimited projects with color coding, progress tracking and status management.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="bi bi-check2-square"></i>
+                        <h5>Dynamic Tasks</h5>
+                        <p>Priority levels, due dates, real-time status updates and one-click completion.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <h5>Live Analytics</h5>
+                        <p>Beautiful dashboards with charts showing your productivity at a glance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="bi bi-shield-check"></i>
+                        <h5>Production Ready</h5>
+                        <p>Secure auth, responsive design, and ready for AWS EC2 + RDS deployment.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <div style="font-size: 12rem; opacity: 0.15; line-height: 1;">
+                    <i class="bi bi-layers-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <div style="width:12px;height:12px;border-radius:3px;background:{{ project.color }};"></div>
+                <h2 class="fw-bold mb-0">{{ project.name }}</h2>
+                <span class="status-badge status-{{ 'completed' if project.status == 'completed' else 'todo' }}">{{ project.status }}</span>
+            </div>
+            <p class="text-muted mb-0">{{ project.description or 'No description' }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('main.create_task', project_id=project.id) }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Add Task
+            </a>
+            <a href="{{ url_for('main.edit_project', project_id=project.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{{ url_for('main.delete_project', project_id=project.id) }}" 
+                  onsubmit="return confirm('Delete this project and all its tasks?');">
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Progress -->
+    <div class="card-modern mb-4">
+        <div class="card-body py-3">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-semibold">Overall Progress</span>
+                <span class="fw-bold" data-progress-text>{{ project.progress }}%</span>
+            </div>
+            <div class="progress-thin" style="height:10px;">
+                <div class="progress-bar" style="width: {{ project.progress }}%; background: {{ project.color }};" data-project-progress></div>
+            </div>
+            <div class="d-flex gap-4 mt-2">
+                <small class="text-muted">{{ project.task_count }} total tasks</small>
+                <small class="text-success">{{ project.completed_count }} completed</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="d-flex gap-2 mb-3">
+        <a href="?status=all" class="btn btn-sm {% if status_filter == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+        <a href="?status=todo" class="btn btn-sm {% if status_filter == 'todo' %}btn-primary{% else %}btn-outline-secondary{% endif %}">To Do</a>
+        <a href="?status=in_progress" class="btn btn-sm {% if status_filter == 'in_progress' %}btn-primary{% else %}btn-outline-secondary{% endif %}">In Progress</a>
+        <a href="?status=completed" class="btn btn-sm {% if status_filter == 'completed' %}btn-primary{% else %}btn-outline-secondary{% endif %}">Completed</a>
+    </div>
+    
+    <!-- Tasks -->
+    <div class="card-modern">
+        <div class="card-header">
+            <span><i class="bi bi-list-task me-2 text-primary"></i>Tasks</span>
+        </div>
+        <div class="card-body">
+            {% if tasks %}
+                {% for task in tasks %}
+                <div class="task-item {% if task.status == 'completed' %}completed{% endif %}">
+                    <div class="task-checkbox {% if task.status == 'completed' %}checked{% endif %}"
+                         onclick="toggleTask({{ task.id }}, this)">
+                        {% if task.status == 'completed' %}<i class="bi bi-check"></i>{% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="task-title fw-semibold">{{ task.title }}</div>
+                                {% if task.description %}
+                                <small class="text-muted d-block mt-1">{{ task.description[:120] }}{% if task.description|length > 120 %}...{% endif %}</small>
+                                {% endif %}
+                                {% if task.due_date %}
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar3 me-1"></i>{{ task.due_date.strftime('%b %d, %Y') }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <span class="priority-badge priority-{{ task.priority }}">{{ task.priority }}</span>
+                                <span class="status-badge status-{{ task.status }}">{{ task.status.replace('_', ' ') }}</span>
+                                <a href="{{ url_for('main.edit_task', task_id=task.id) }}" class="btn btn-sm btn-link text-secondary p-0">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('main.delete_task', task_id=task.id) }}" 
+                                      onsubmit="return confirm('Delete this task?');" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-clipboard2-check fs-1 d-block mb-2"></i>
+                    No tasks in this view. 
+                    <a href="{{ url_for('main.create_task', project_id=project.id) }}">Add one</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
